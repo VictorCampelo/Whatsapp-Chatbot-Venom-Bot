@@ -9,9 +9,12 @@ function execute(user, msg) {
 
   if (msg === "#") {
     banco.db[user].stage = 4;
+    return stages.step[4].obj.execute(user, "");
   }
 
-  banco.db[user].endereco = msg
+  if (msg != "#" && msg != "*"){
+    banco.db[user].endereco = msg
+  }
 
   console.log(banco.db[user])
 
