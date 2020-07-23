@@ -17,8 +17,8 @@ function start(client) {
       //send return from current stage with mensage
       client.sendText(message.from, element);
     }
-    
   });
+  console.log(client.getHostDevice())
 }
 
 function getStage(user) {
