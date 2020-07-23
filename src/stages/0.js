@@ -1,22 +1,23 @@
-const comunidades = require('../comunidades')
-const banco = require('../banco')
-const numero = require('../solicitacoes_semana')
+const cardapio = require("../cardapio");
+const banco = require("../banco");
 
+function execute(user, msg, contato) {
+  let menu = " CARDAPIO \n\n";
 
-function execute(user, msg) {
-    let menu = "Vou te apresentar as opções disponíveis para assistir a santa missa:  \n\n"
-    
-     Object.keys(comunidades.opcoes).forEach((value) => {
-        let element = comunidades.opcoes[value];        
-        let vagas = element.vagas
-        let data = element.data 
-        menu += `${value} - ${element.comunidade} \n Data: ${data} \n  Horário: ${element.horario} \n Vagas: ${vagas} \n \n `            
-    })
+  Object.keys(cardapio.menu).forEach((i) => {
+    let element = cardapio.menu[i];
+    menu += `${i} - ${element.descricao}        R$ ${element.preco} \n`;
+  });
 
-    banco.db[user].stage = 1;
-    
-    numero.solicitacoes_usuario(user)
-    return [`Olá caro paroquiano, sou o assistente virtual da Paróquia Jesus Libertador`, menu , "Para selecionar a missa que você deseja assistir, basta digitar o código da comunidade"]  
+  banco.db[user].stage = 1;
+  banco.db[user].nome = contato
+  banco.db[user].numero = user.split('@')[0]
+
+  return [
+    `Olá ${contato} do numero ${user.split('@')[0]} sou uma assistente virtual, 
+    irei apresentar o carpádio, para fazer o pedido basta enviar o codigo do produto`,
+    menu,
+  ];
 }
 
 exports.execute = execute;

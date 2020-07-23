@@ -1,19 +1,18 @@
 const banco = require("../banco");
-let estagioInterno = 0;
 
 function execute(user, msg) {
-  //banco.db[user].stage = 0;
 
-  if (estagioInterno === 1) {
-    banco.db[user].stage = 4;
+  //SAVE INFO IN DATABASE HERE
 
-    return stages.step[4].obj.execute(user, "");
-  }
-  if (msg === "1") {
-    estagioInterno++;
-    return ["Digite o valor em dinheiro para levarmos o troco: "];
-  }
-  return ["Escolha a forma de pagamento:\n1️⃣-Dinheiro\n2️⃣-Cartão"];
+  banco.db[user].stage = 0;
+  return [
+    "Obrigado pela preferencia.",
+    "Aguarde, seu pedido chegará em breve",
+    "Mais informações ligue para 33333-3311",
+    `Valor do Pedido: ${banco.db[user].preco}`,
+    `Valor Troco: ${banco.db[user].valor_troco}`,
+    `Lista: ${banco.db[user].itens.descricao}`
+  ];
 }
 
 exports.execute = execute;

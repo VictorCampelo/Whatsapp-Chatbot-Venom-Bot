@@ -4,25 +4,21 @@ const stages = require("../stages");
 function execute(user, msg) {
   if (msg === "*") {
     banco.db[user].stage = 0;
-    banco.db[user].itens = []
-    banco.db[user].imagens = []
-    banco.db[user].numero = 0
-    return ["Solicitação cancelada com sucesso"];
+    return ["Pedido cancelado com sucesso"];
   }
 
   if (msg === "#") {
-    
-    return[`Obrigado pela sua solicitação ${user}`]           
-  };
-
-  banco.db[user].stage = 0;
-  banco.db[user].itens = []
-  banco.db[user].imagens = []
-      
+    banco.db[user].stage = 4;
   }
 
+  banco.db[user].endereco = msg
 
+  console.log(banco.db[user])
 
-
+  return [
+    `Confirma endereco de entrega : \n ${msg}`,
+    "```Digite # para continuar ou * para cancelar```",
+  ];
+}
 
 exports.execute = execute;
