@@ -3,8 +3,26 @@
 const bot = require("venom-bot");
 const banco = require("./banco");
 const stages = require("./stages");
+const fs = require('fs');
 
-bot.create().then((client) => start(client));
+bot.create('teste',(base64Qr, asciiQR) => {
+  // To log the QR in the terminal
+  console.log(asciiQR);
+  
+  // To write it somewhere else in a file
+  exportQR(base64Qr, 'marketing-qr.png');
+}).then((client) => start(client));
+
+// Writes QR in specified path
+function exportQR(qrCode, path) {
+  qrCode = qrCode.replace('data:image/png;base64,', '');
+  const imageBuffer = Buffer.from(qrCode, 'base64');
+  
+  // Creates 'marketing-qr.png' file
+  fs.writeFileSync(path, imageBuffer);
+  console.log(path)
+}
+
 function start(client) {
   client.onMessage((message) => {
     current_stage = getStage(message.from)
@@ -13,12 +31,11 @@ function start(client) {
     
     for (let index = 0; index < resp.length; index++) {
       const element = resp[index];
-
+      
       //send return from current stage with mensage
       client.sendText(message.from, element);
     }
   });
-  console.log(client.getHostDevice())
 }
 
 function getStage(user) {
