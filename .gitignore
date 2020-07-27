@@ -108,3 +108,5 @@ tokens/
 marketing*
 
 sql/
+
+output.json
