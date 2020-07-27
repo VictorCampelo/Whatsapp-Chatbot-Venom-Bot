@@ -10,9 +10,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.17.1",
     "fs": "0.0.1-security",
     "mysql": "^2.18.1",
     "pg": "^8.3.0",
+    "sequelize": "^6.3.3",
     "venom-bot": "^1.0.4"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.2.0"
   }
 }

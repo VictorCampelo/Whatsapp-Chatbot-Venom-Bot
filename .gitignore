@@ -106,3 +106,5 @@ dist
 src/tockens/
 
 marketing*
+
+sql/
