@@ -1,8 +1,8 @@
 {
-  "name": "03-ZapBOT2",
+  "name": "whatsappBot",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,10 +12,13 @@
   "dependencies": {
     "express": "^4.17.1",
     "fs": "0.0.1-security",
+    "mariadb": "^2.4.2",
     "mysql": "^2.18.1",
+    "mysql2": "^2.1.0",
+    "nodemon": "^2.0.4",
     "pg": "^8.3.0",
     "sequelize": "^6.3.3",
-    "venom-bot": "^1.0.4"
+    "venom-bot": "^1.1.4"
   },
   "devDependencies": {
     "sequelize-cli": "^6.2.0"

@@ -1,4 +1,4 @@
-const banco = require("../banco");
+const banco = require("../bd");
 const stages = require("../stages");
 
 function execute(user, msg) {

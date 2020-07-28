@@ -1,4 +1,4 @@
-const banco = require("../banco");
+const banco = require("../bd");
 
 function execute(user, msg) {
   if (msg === "*") {

@@ -1,5 +1,5 @@
-const cardapio = require("../cardapio");
-const banco = require("../banco");
+const cardapio = require("../products");
+const banco = require("../bd");
 
 function execute(user, msg, contato) {
   let menu = " CARDAPIO \n\n";

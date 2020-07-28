@@ -1,16 +1,21 @@
 // Supports ES6
 // import { create, Whatsapp } from 'sulla';
 const bot = require("venom-bot");
-const banco = require("./banco");
+const banco = require("./bd");
 const stages = require("./stages");
 const fs = require('fs');
+
+// "TESTE" SHOULD RECEIVE THE NAME AND NUMBER'S OWNER
+// ALL THIS CODE SHOULD BE ENCAPSULATE IN A FUNCTION AND EXPORT IT
+// THE NAME OF QRCODE IMAGE FILE AND JSON QRCODE SHOULD BE RENAME WITH SPECIAL CODE
+// QRCODE IMAGE AND QRCODE JSON SHOULD BE STORED TEMPORALLY IN THE DIRECTORY CALLED FILES
 
 bot.create('teste',(base64Qr, asciiQR) => {
   // To log the QR in the terminal
   console.log(asciiQR);
   
   // To write it somewhere else in a file
-  exportQR(base64Qr, 'marketing-qr.png');
+  exportQR(base64Qr, 'files/marketing-qr.png');
 }).then((client) => start(client));
 
 // Writes QR in specified path
@@ -20,7 +25,17 @@ function exportQR(qrCode, path) {
   
   // Creates 'marketing-qr.png' file
   fs.writeFileSync(path, imageBuffer);
-  console.log(path)
+  
+  var jsonContent = JSON.stringify(qrCode);
+  
+  fs.writeFile("files/output.json", jsonContent, 'utf8', function (err) {
+    if (err) {
+      console.log("An error occured while writing JSON Object to File.");
+      return console.log(err);
+    }
+    
+    console.log("JSON file has been saved.");
+  });
 }
 
 function start(client) {
