@@ -10,13 +10,12 @@ module.exports = {
         type: DataTypes.INTEGER,
       },
       name: {
-        allowNull: false,
+        allowNull: true,
         type: DataTypes.STRING,
       },
       numero: {
         allowNull: false,
-        type: DataTypes.INTEGER,
-        unique: true,
+        type: DataTypes.STRING,
       },
       endereco: {
         allowNull: false,
