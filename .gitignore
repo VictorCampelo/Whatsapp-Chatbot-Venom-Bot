@@ -104,9 +104,6 @@ dist
 .tern-port
 
 tokens/
-
-marketing*
-
 sql/
+files/
 
-output.json
