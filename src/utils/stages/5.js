@@ -2,7 +2,7 @@ const banco = require("../bd");
 // const db = require("../database/mysqlConnect");
 // const db  = require("../../database/index.js")
 // const bd = require("../database/pgconnect");
-const Client  = require("../../src/models/Client")
+const Client  = require("../../models/Client")
 const Sequelize = require('sequelize');
 
 function execute(user, msg) {
