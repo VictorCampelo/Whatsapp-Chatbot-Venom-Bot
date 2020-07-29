@@ -1,13 +1,13 @@
 const express = require('express');
 //const bot = require("./utils/venomBot")
-
-const db = require('./database');
-const routesUsers = require('./routes/users');
-const routesIndex = require('./routes/index');
+const db = require('./src/database');
+const routesUsers = require('./src/routes/users');
+const routesIndex = require('./src/routes/index');
+const routesAuth = require('./src/routes/auth');
 const bodyParser = require('body-parser');
 
 var http = require('http');  
-var cookieParser = require('cookie-parser'); 
+var cookieParser = require('cookie-parser');
 
 const app = express();
 
@@ -17,10 +17,9 @@ app.use(cookieParser());
 
 app.use(express.json());
 
-app.use(express.urlencoded({ extended: false }));
-
 app.use(routesIndex);
 app.use(routesUsers);
+app.use(routesAuth);
 
 var server = http.createServer(app); 
 server.listen(3000);
