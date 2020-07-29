@@ -1,8 +1,9 @@
 const express = require('express');
-const bot = require("./utils/venomBot")
-const fs = require("fs")
+//const bot = require("./utils/venomBot")
+
 const db = require('./database');
-const routes = require('./routes');
+const routesUsers = require('./routes/users');
+const routesIndex = require('./routes/index');
 const bodyParser = require('body-parser');
 
 var http = require('http');  
@@ -18,7 +19,8 @@ app.use(express.json());
 
 app.use(express.urlencoded({ extended: false }));
 
-app.use(routes);
+app.use(routesIndex);
+app.use(routesUsers);
 
 var server = http.createServer(app); 
 server.listen(3000);
