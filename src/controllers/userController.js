@@ -1,40 +1,42 @@
 const JsonError = require('../errors/JsonError');
-
 const User = require('../models/User');
 const bcrypt = require('bcrypt')
-
-const Joi = require("@hapi/joi")
-
-const schema = Joi.object({
-    name: Joi.string()
-    .min(6)
-    .required(),
-    email: Joi.string()
-    .min(6)
-    .required()
-    .email(),
-    password: Joi.string()
-    .min(6)
-    .required()
-});
-
+const jwt = require('jsonwebtoken');
+const validator = require('../middleware/validation')
+const dotenv = require('dotenv');
+dotenv.config();
 //TO-DO
 // ADD FUNTION TO RETURN A QRCODE JSON
 
-// To verify the password later on:
-
-// if(bcrypt.compareSync('somePassword', hash)) {
-//  // Passwords match
-// } else {
-//  // Passwords don't match
-// }
-
 module.exports = {
-    async create(request, response) {
-        const {error} = schema.validate(request.body)
-        if(!error){
+    async login(request, response) {
+        let [check, msg, user] = await validator.loginValidation(request);
+        if(check === true){
             try {
-                request.body.password = bcrypt.hashSync(request.body.password, 10);
+                console.log(user.id)
+                console.log(process.env.TOKEN_SECRET)
+                const token = jwt.sign({id: user.id}, process.env.SECRET)
+                response.status(201);
+                response.header('auth-token', token)
+                response.json({"jwt_token": token});
+            } catch (error) {
+                console.log(error)
+                response.status(500);
+                response.json(JsonError(request, response, 'Não foi possívelfazer login'));
+            }
+        }
+        else{
+            response.status(400).json(JsonError(request, response, msg));
+        }
+    },
+    
+    async create(request, response) {
+        let [check, msg] = await validator.registerValidation(request);
+        console.log(check)
+        if(check === true){
+            try {
+                const salt =  await bcrypt.genSalt(10)
+                request.body.password = bcrypt.hashSync(request.body.password, salt);
                 const result = await User.create(request.body);
                 response.status(201);
                 response.json(result);
@@ -45,9 +47,8 @@ module.exports = {
             }
         }
         else{
-            response.status(400).json(JsonError(request, response, error.details[0].message));
+            response.status(400).json(JsonError(request, response, msg));
         }
-        
     },
     
     async read(request, response) {
