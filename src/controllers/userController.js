@@ -2,7 +2,8 @@ const JsonError = require('../errors/JsonError');
 const User = require('../models/User');
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
-const validator = require('../middleware/validation')
+const validator = require('../helpers/validation')
+const {signAccessToken, signRefreshToken} = require('../middleware/verifyJwt');
 const dotenv = require('dotenv');
 dotenv.config();
 //TO-DO
@@ -13,12 +14,16 @@ module.exports = {
         let [check, msg, user] = await validator.loginValidation(request);
         if(check === true){
             try {
-                console.log(user.id)
-                console.log(process.env.TOKEN_SECRET)
-                const token = jwt.sign({id: user.id}, process.env.SECRET)
+                user.password = undefined;                
+                const token = await signAccessToken({id: user.id})
+                const reToken = await signRefreshToken({id: user.id})
                 response.status(201);
                 response.header('auth-token', token)
-                response.json({"jwt_token": token});
+                response.json({ 
+                    user, 
+                    token: token,
+                    refresh_token: reToken
+                });
             } catch (error) {
                 console.log(error)
                 response.status(500);
@@ -37,9 +42,15 @@ module.exports = {
             try {
                 const salt =  await bcrypt.genSalt(10)
                 request.body.password = bcrypt.hashSync(request.body.password, salt);
-                const result = await User.create(request.body);
+                const user = await User.create(request.body);
+                user.password = undefined;
+
                 response.status(201);
-                response.json(result);
+                response.json({ 
+                    user, 
+                    token: await signAccessToken({id: user.id}),
+                    refresh_token: await signRefreshToken({id: user.id})
+                });
             } catch (error) {
                 console.log(error)
                 response.status(500);
