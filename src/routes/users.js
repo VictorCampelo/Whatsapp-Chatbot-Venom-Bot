@@ -1,13 +1,14 @@
 const Router = require('express');
 const fs = require("fs")
 const userController = require('../controllers/userController');
-const auth = require('../middleware/verifyJwt');
+const {verifyAccessToken} = require('../middleware/verifyJwt');
 const routesUser = Router();
 
-routesUser.post('/users', auth, userController.create);
-routesUser.get('/users', auth, userController.read);
-routesUser.put('/users/:id', auth, userController.update);
-routesUser.delete('/users/:id', auth, userController.delete);
+routesUser.post('/users', verifyAccessToken, userController.create);
+routesUser.get('/users', verifyAccessToken, userController.read);
+routesUser.get('/authusers', verifyAccessToken, userController.readAuth);
+routesUser.put('/users/:id', verifyAccessToken, userController.update);
+routesUser.delete('/users/:id', verifyAccessToken, userController.delete);
 
 // CREATE A QRCODE IMAGE TO USER DYNAMICALLY
 
