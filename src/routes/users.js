@@ -1,7 +1,7 @@
 const Router = require('express');
 const fs = require("fs")
 const userController = require('../controllers/userController');
-const {verifyAccessToken} = require('../middleware/verifyJwt');
+const {verifyAccessToken} = require('../middleware/validateAcessToken');
 const routesUser = Router();
 
 routesUser.post('/users', verifyAccessToken, userController.create);

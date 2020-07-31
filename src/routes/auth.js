@@ -16,14 +16,16 @@ routesAuth.delete('/logout', async function(req, res, next) {
     try {
         const refreshToken = req.body
         if (!refreshToken) throw createHttpError.BadRequest()
+
         const userId = await verifyRefreshToken(refreshToken.refresh_token)
         client.DEL(userId, (err, val) => {
           if (err) {
             console.log(err.message)
-            throw createError.InternalServerError()
+            res.status(400).json(createError.InternalServerError())
           }
           console.log(val)
-          res.sendStatus(204)
+          res.status(200).json("User logout")
+          next();
         })
       } catch (error) {
         next(error)
