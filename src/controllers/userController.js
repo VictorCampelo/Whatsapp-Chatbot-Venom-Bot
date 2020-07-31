@@ -53,7 +53,20 @@ module.exports = {
     
     async read(request, response) {
         try {
+            console.log(request.user)
             const result = await User.findAll({ raw: true });
+            response.json(result);
+        } catch (error) {
+            console.log(error)
+            response.status(500);
+            response.json(JsonError(request, response, 'Não foi possível buscar os Users'));
+        }
+    },
+
+    async readAuth(request, response) {
+        try {
+            console.log(request.userId)
+            const result = await User.findOne({where: { id: request.userId}});
             response.json(result);
         } catch (error) {
             console.log(error)
