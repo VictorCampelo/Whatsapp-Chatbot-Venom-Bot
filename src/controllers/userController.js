@@ -15,14 +15,11 @@ module.exports = {
         if(check === true){
             try {
                 user.password = undefined;                
-                const token = await signAccessToken({id: user.id})
-                const reToken = await signRefreshToken({id: user.id})
                 response.status(201);
-                response.header('auth-token', token)
                 response.json({ 
                     user, 
-                    token: token,
-                    refresh_token: reToken
+                    accessToken: await signAccessToken({id: user.id}),
+                    refreshToken: await signRefreshToken({id: user.id})
                 });
             } catch (error) {
                 console.log(error)
@@ -48,8 +45,8 @@ module.exports = {
                 response.status(201);
                 response.json({ 
                     user, 
-                    token: await signAccessToken({id: user.id}),
-                    refresh_token: await signRefreshToken({id: user.id})
+                    accessToken: await signAccessToken({id: user.id}),
+                    refreshToken: await signRefreshToken({id: user.id})
                 });
             } catch (error) {
                 console.log(error)
