@@ -22,7 +22,8 @@ module.exports = {
               console.log(err.message)
               return res.status(401).json(err)
             }
-            if (token === result) { 
+            if (token === result) {
+              req.userId = userId
               next();
             }else res.status(401).json(createError.Unauthorized())
           })
