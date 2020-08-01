@@ -5,6 +5,7 @@ const validator = require('../helpers/validation')
 const {signAccessToken, signRefreshToken, verifyRefreshToken} = require('../middleware/verifyJwt');
 const dotenv = require('dotenv');
 const createHttpError = require('http-errors');
+const client = require("../helpers/init_redis")
 
 dotenv.config();
 
@@ -75,7 +76,7 @@ module.exports = {
             })
           } catch (error) {
                 console.log(error)
-                response.status(500);
+                response.status(401);
                 response.json(JsonError(request, response, 'Logout Error'));
           }
     },
