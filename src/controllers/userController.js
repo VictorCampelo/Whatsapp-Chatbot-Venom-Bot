@@ -1,36 +1,16 @@
 const JsonError = require('../errors/JsonError');
 const User = require('../models/User');
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken');
-const validator = require('../helpers/validation')
+const bcrypt = require('bcrypt');
+const validator = require('../helpers/validation');
 const {signAccessToken, signRefreshToken} = require('../middleware/verifyJwt');
 const dotenv = require('dotenv');
+const fs = require("fs")
 dotenv.config();
+
 //TO-DO
 // ADD FUNTION TO RETURN A QRCODE JSON
 
 module.exports = {
-    async login(request, response) {
-        let [check, msg, user] = await validator.loginValidation(request);
-        if(check === true){
-            try {
-                user.password = undefined;                
-                response.status(201);
-                response.json({ 
-                    user, 
-                    accessToken: await signAccessToken({id: user.id}),
-                    refreshToken: await signRefreshToken({id: user.id})
-                });
-            } catch (error) {
-                console.log(error)
-                response.status(500);
-                response.json(JsonError(request, response, 'Não foi possívelfazer login'));
-            }
-        }
-        else{
-            response.status(400).json(JsonError(request, response, msg));
-        }
-    },
     
     async create(request, response) {
         let [check, msg] = await validator.registerValidation(request);
@@ -41,7 +21,7 @@ module.exports = {
                 request.body.password = bcrypt.hashSync(request.body.password, salt);
                 const user = await User.create(request.body);
                 user.password = undefined;
-
+                
                 response.status(201);
                 response.json({ 
                     user, 
@@ -57,6 +37,7 @@ module.exports = {
         else{
             response.status(400).json(JsonError(request, response, msg));
         }
+        
     },
     
     async read(request, response) {
@@ -70,10 +51,9 @@ module.exports = {
             response.json(JsonError(request, response, 'Não foi possível buscar os Users'));
         }
     },
-
+    
     async readAuth(request, response) {
         try {
-            console.log(request.userId)
             const result = await User.findOne({where: { id: request.userId}});
             response.json(result);
         } catch (error) {
@@ -87,6 +67,7 @@ module.exports = {
         try {
             const { id } = request.params;
             const result = await User.findOne({ where: { id } });
+            console.log("nao era pra entraar")
             if (result) {
                 await result.update(request.body);
                 response.json({ status: '200', message: 'Contado atualizado com sucesso' });
@@ -102,8 +83,8 @@ module.exports = {
     },
     
     async delete(request, response) {
-        const { id } = request.params;
         try {
+            const { id } = request.params;
             const result = await User.findOne({ where: { id } });
             if (result) {
                 await result.destroy();
@@ -115,6 +96,19 @@ module.exports = {
         } catch (error) {
             response.status(500);
             response.json(JsonError(request, response, 'Não foi possível deletar o User'));
+        }
+    },
+    
+    async qrcode(request, response){
+        try {
+            userId = request.userId;
+            var img = fs.readFileSync('./src/utils/files/marketing-qr.png');
+            response.writeHead(200, {'Content-Type': 'image/png' });
+            response.end(img, 'binary');   
+        } catch (error) {
+            console.log(error)
+            response.status(500);
+            response.json(JsonError(request, response, 'Não foi possível atualizar o User'));
         }
     }
 };

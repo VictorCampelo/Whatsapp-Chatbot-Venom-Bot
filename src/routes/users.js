@@ -1,5 +1,4 @@
 const Router = require('express');
-const fs = require("fs")
 const userController = require('../controllers/userController');
 const {verifyAccessToken} = require('../middleware/validateAcessToken');
 const routesUser = Router();
@@ -12,10 +11,6 @@ routesUser.delete('/users/:id', verifyAccessToken, userController.delete);
 
 // CREATE A QRCODE IMAGE TO USER DYNAMICALLY
 
-routesUser.get('/users/qrcode', (req, res) => {
-    var img = fs.readFileSync('./src/utils/files/marketing-qr.png');
-    res.writeHead(200, {'Content-Type': 'image/png' });
-    res.end(img, 'binary');
-  });
+routesUser.get('/users/qrcode', verifyAccessToken, userController.qrcode);
 
 module.exports = routesUser;
