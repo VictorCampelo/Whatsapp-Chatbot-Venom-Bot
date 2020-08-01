@@ -20,10 +20,9 @@ module.exports = {
         if (err) {
           if (err.name === "TokenExpiredError") {
             console.log(err.message)
-
             try {
               const userId = await verifyRefreshToken(refreshToken);
-              
+
               let redis_token = client.get(userId, function(err, val) {
                 return err ? null : val ? val : null;
               });
@@ -49,18 +48,12 @@ module.exports = {
                 res.status(201).header({ 
                   accessToken: await signAccessToken({id: userId})
                 });
-                next();
               }
             } catch (error) {
-              return res.status(401).json(error)
+              res.status(401).json(error)
             }
           }
-          else {
-            // If any error other than "TokenExpiredError" occurs, it means
-            // that either token is invalid, or in wrong format, or ...  
-            return res.status(401).json(err)
-          }
-          return res.status(401).json(err)
+          res.status(401).json(err)
         }
         else {
           const userId = user.id
@@ -72,15 +65,16 @@ module.exports = {
             if(!result){
               return res.status(401).json("User is logouted")
             }
-            console.log(result)
+            //STORE USER ID
             req.userId = user.id
+            
             next();
           })
         }
       })
     } catch (error) {
       console.log(error)
-      res.status(400).json("Invalid Token")
+      res.status(401).json("Invalid Token")
     }
   }
 }
