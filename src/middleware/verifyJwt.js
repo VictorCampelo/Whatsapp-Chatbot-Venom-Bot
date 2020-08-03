@@ -2,8 +2,8 @@ const JWT = require('jsonwebtoken')
 const createError = require('http-errors')
 const client = require('../helpers/init_redis')
 
-const jwt_expiration = 30;
-const jwt_refresh_expiration = 60 * 60 * 24 * 30;
+const jwt_expiration = 10 * 60 * 1000;
+const jwt_refresh_expiration = 60 * 60 * 24 * 30; //30 days
 
 module.exports = {  
   signAccessToken: (params) => {

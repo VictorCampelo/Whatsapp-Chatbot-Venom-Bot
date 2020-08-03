@@ -5,7 +5,8 @@ const validator = require('../helpers/validation')
 const {signAccessToken, signRefreshToken, verifyRefreshToken} = require('../middleware/verifyJwt');
 const dotenv = require('dotenv');
 const createHttpError = require('http-errors');
-const client = require("../helpers/init_redis")
+const client = require("../helpers/init_redis");
+const { promises } = require('fs');
 
 dotenv.config();
 
@@ -71,6 +72,7 @@ module.exports = {
                 console.log(err.message)
                 response.status(400).json(createError.InternalServerError())
               }
+              promises.resolve()
               console.log(val)
               response.status(200).json("User logout")
             })

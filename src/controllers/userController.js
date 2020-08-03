@@ -5,10 +5,17 @@ const validator = require('../helpers/validation');
 const {signAccessToken, signRefreshToken} = require('../middleware/verifyJwt');
 const dotenv = require('dotenv');
 const fs = require("fs")
+
+const {fork} = require('child_process');
+
 dotenv.config();
+
+var sayings = new Map();
 
 //TO-DO
 // ADD FUNTION TO RETURN A QRCODE JSON
+
+exports.sayings = sayings;
 
 module.exports = {
     
@@ -101,10 +108,36 @@ module.exports = {
     
     async qrcode(request, response){
         try {
-            userId = request.userId;
-            var img = fs.readFileSync('./src/utils/files/marketing-qr.png');
-            response.writeHead(200, {'Content-Type': 'image/png' });
-            response.end(img, 'binary');   
+            //const {initBot, exportPid} = require("../utils/venomBot")
+            let userId = request.userId
+            
+            const forked = fork('src/utils/venomBot.js')
+
+            forked.send(userId.toString());
+            
+            console.log(forked.pid)
+            
+            // forked.pid // 189...
+            // forked.killed // false
+            
+            // forked.kill();
+            
+            // forked.killed // true
+            
+            await new Promise(resolve => setTimeout(resolve, 10000));
+            // HERE HAVE TO TAKE A QRCODE FROM REDIS OR ANOTHER DB 
+            
+            // create a set of promisses 
+            //sayings.set(request.userId, user)
+            
+            var qr = await fs.readFileSync('./src/utils/files/'+userId+'output.json');
+
+            // const qr = await forked.on('message', result => {
+            //     return result
+            //   });
+
+
+            response.status(200).json(qr)
         } catch (error) {
             console.log(error)
             response.status(500);

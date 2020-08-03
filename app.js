@@ -22,6 +22,7 @@ app.use(routesUsers);
 app.use(routesAuth);
 
 var server = http.createServer(app); 
+// server.listen(3000, '192.168.0.8');
 server.listen(3000);
 console.log("Servidor escutando na porta 3000...")
 
