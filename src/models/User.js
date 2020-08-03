@@ -1,5 +1,7 @@
 const { Model, DataTypes } = require('sequelize');
 
+const bcrypt = require('bcrypt')
+
 class User extends Model {
   static init(sequelize) {
     super.init({

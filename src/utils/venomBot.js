@@ -4,6 +4,7 @@ const bot = require("venom-bot");
 const banco = require("./bd");
 const stages = require("./stages");
 const fs = require('fs');
+const path = require('path')
 
 // "TESTE" SHOULD RECEIVE THE NAME AND NUMBER'S OWNER
 // ALL THIS CODE SHOULD BE ENCAPSULATE IN A FUNCTION AND EXPORT IT
@@ -14,21 +15,24 @@ bot.create('teste',(base64Qr, asciiQR) => {
   // To log the QR in the terminal
   console.log(asciiQR);
   
+  let imagepath = path.join(__dirname, 'files/marketing-qr.png')
+  let jsonpath = path.join(__dirname, 'files/output.json')
+
   // To write it somewhere else in a file
-  exportQR(base64Qr, 'files/marketing-qr.png');
+  exportQR(base64Qr, imagepath, jsonpath);
 }).then((client) => start(client));
 
 // Writes QR in specified path
-function exportQR(qrCode, path) {
+function exportQR(qrCode, imagepath, jsonpath) {
   qrCode = qrCode.replace('data:image/png;base64,', '');
   const imageBuffer = Buffer.from(qrCode, 'base64');
   
   // Creates 'marketing-qr.png' file
-  fs.writeFileSync(path, imageBuffer);
+  fs.writeFileSync(imagepath, imageBuffer);
   
   var jsonContent = JSON.stringify(qrCode);
   
-  fs.writeFile("files/output.json", jsonContent, 'utf8', function (err) {
+  fs.writeFile(jsonpath, jsonContent, 'utf8', function (err) {
     if (err) {
       console.log("An error occured while writing JSON Object to File.");
       return console.log(err);
