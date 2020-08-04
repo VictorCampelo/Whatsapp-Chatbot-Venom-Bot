@@ -3,6 +3,8 @@ const banco = require("./bd");
 const stages = require("./stages");
 const fs = require('fs');
 const path = require('path');
+const client = require('../helpers/init_redis');
+const { qrcode } = require("../controllers/userController");
 
 const config = {
   headless: true, // Headless chrome
@@ -11,25 +13,33 @@ const config = {
   debug: false, // Opens a debug session
   logQR: false, // Logs QR automatically in terminal
   browserArgs: [''], // Parameters to be added into the chrome browser instance
-  refreshQR: 5000, // Will refresh QR every 15 seconds, 0 will load QR once. Default is 30 seconds
-  autoClose: 15000, // Will auto close automatically if not synced, 'false' won't auto close. Default is 60 seconds (#Important!!! Will automatically set 'refreshQR' to 1000#)
+  refreshQR: 15000, // Will refresh QR every 15 seconds, 0 will load QR once. Default is 30 seconds
+  autoClose: 180000, // Will auto close automatically if not synced, 'false' won't auto close. Default is 60 seconds (#Important!!! Will automatically set 'refreshQR' to 1000#)
   disableSpins: true, // Will disable Spinnies animation, useful for containers (docker) for a better log
 }
+
+var qrCodeRecent = "";
 
 // "TESTE" SHOULD RECEIVE THE NAME AND NUMBER'S OWNER
 // ALL THIS CODE SHOULD BE ENCAPSULATE IN A FUNCTION AND EXPORT IT
 // THE NAME OF QRCODE IMAGE FILE AND JSON QRCODE SHOULD BE RENAME WITH SPECIAL CODE
 // QRCODE IMAGE AND QRCODE JSON SHOULD BE STORED TEMPORALLY IN THE DIRECTORY CALLED FILES
 
-function executeBot(userId) {
+process.on('message', message => {
+  const result = executeBot(message);
+  //process.send(result);
+});
+
+async function executeBot(userId) {
   try {
     bot.create(userId, (base64Qr, asciiQR) => {exportQR(base64Qr, userId)}, (statusFind) => {}, config)
     .then((client) => {
+      deleteQrcode(userId)
       start(client);
     })
     .catch((erro) => {
-      console.log("aqui foi erro!!!")
-      console.log(erro)
+      deleteQrcode(userId)
+      console.log("Exiting...!")
       process.exit()
     })
   } catch (error) {
@@ -37,23 +47,29 @@ function executeBot(userId) {
   }
 }
 
-
-process.on('message', message => {
-  const result = executeBot(message);
-  //process.send(result);
-});
-
-function exportQR(base64Qr, userId){
-  const jsonpath = path.join(__dirname, 'files/'+userId+'output.json')
+async function exportQR(base64Qr, userId){
   const qrCode = base64Qr.replace('data:image/png;base64,', '');
   const jsonContent = JSON.stringify(qrCode);
   //SAVE IN REDIS HERE
-  fs.writeFile(jsonpath, jsonContent, 'utf8', function (err) {
+  if (jsonContent != qrCodeRecent) {
+    await client.SET(userId+'qrcode', jsonContent, (err, reply) => {
+      if (err) {
+        console.log(err.message)
+        reject(createError.InternalServerError())
+        return
+      }
+      qrCodeRecent = jsonContent
+    }) 
+  }
+}
+
+async function deleteQrcode(userId) {
+  await client.DEL(userId+'qrcode', (err, val) => {
     if (err) {
-      console.log("An error occured while writing JSON Object to File.");
-      return console.log(err);
+      createError.InternalServerError()
     }
-  });
+    promises.resolve()
+  })
 }
 
 

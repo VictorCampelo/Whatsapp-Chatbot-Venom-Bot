@@ -6,6 +6,8 @@ const {signAccessToken, signRefreshToken} = require('../middleware/verifyJwt');
 const dotenv = require('dotenv');
 const fs = require("fs")
 
+const client = require('../helpers/init_redis');
+
 const {fork} = require('child_process');
 
 dotenv.config();
@@ -119,25 +121,16 @@ module.exports = {
             
             // forked.pid // 189...
             // forked.killed // false
-            
             // forked.kill();
-            
             // forked.killed // true
             
             await new Promise(resolve => setTimeout(resolve, 10000));
             // HERE HAVE TO TAKE A QRCODE FROM REDIS OR ANOTHER DB 
             
-            // create a set of promisses 
-            //sayings.set(request.userId, user)
-            
-            var qr = await fs.readFileSync('./src/utils/files/'+userId+'output.json');
+            client.get(userId.toString()+'qrcode', function(err,result){
+                response.status(200).json(result)
+            });
 
-            // const qr = await forked.on('message', result => {
-            //     return result
-            //   });
-
-
-            response.status(200).json(qr)
         } catch (error) {
             console.log(error)
             response.status(500);
