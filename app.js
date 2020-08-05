@@ -8,6 +8,8 @@ const bodyParser = require('body-parser');
 
 var http = require('http');  
 var cookieParser = require('cookie-parser');
+const routesProduct = require('./src/routes/product');
+const routesStages = require('./src/routes/stages');
 
 const app = express();
 
@@ -20,6 +22,9 @@ app.use(express.json());
 app.use(routesIndex);
 app.use(routesUsers);
 app.use(routesAuth);
+app.use(routesProduct);
+app.use(routesStages);
+
 
 var server = http.createServer(app); 
 // server.listen(3000, '192.168.0.8');

@@ -16,7 +16,11 @@ module.exports = {
             .email(),
             password: Joi.string()
             .min(6)
-            .required()
+            .required(),
+            is_superuser: Joi.number()
+            .integer()
+            .max(1)
+            .required(),
         });
         const { error } =  schema.validate(req.body)
         
