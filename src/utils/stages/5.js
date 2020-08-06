@@ -4,51 +4,21 @@ const banco = require("../bd");
 // const bd = require("../database/pgconnect");
 const Client  = require("../../models/Client")
 const Sequelize = require('sequelize');
+const Order = require("../../models/Order");
 
-function execute(user, msg) {
+function execute(user, msg, contact, owner) {
   
   //SAVE INFO IN DATABASE HERE
   
-  var numero = banco.db[user].numero
-  var nome = banco.db[user].nome
-  var preco = banco.db[user].preco
-  var endereco = banco.db[user].endereco
-  var valor_troco = banco.db[user].valor_troco
-  // const VALUES = [numero, nome, preco, endereco, valor_troco]
-
-  if(typeof nome === 'undefined'){
-    nome = "no name"
-  }
+  saveClient(banco.db[user])
   
-  console.log(banco.db[user])
-
-  Client.create({
-    name: nome,
-    numero: numero,
-    endereco: endereco,
-    preco: preco,
-    valor_troco: valor_troco
-  }).then(newUser => {
-    console.log(`New user ${newUser.name}, with id ${newUser.id} has been created.`);
-  });
-  
-  
-  // let sql = "INSERT INTO pedidos (numero,nome,preco,endereco,valor_troco) VALUES (?,?,?,?,?)"
-  
-  // db.query(sql, VALUES, function (err, result) {
-  //   if (err) throw err;
-  //   console.log("Number of records inserted: " + result.affectedRows);
-  // })
-  
-  //POSTGRESQL 
-  
-  // let query = `INSERT INTO pedidos ("numero",	"nome",	"preco",	"endereco",	
-  // "valor_troco") 
-  // VALUES ($1, $2, $3, $4, $5)`
-  
-  // db.query(query, VALUES, function(err){
-  //   if (err) console.log(err)
-  // })
+  const message = [
+    "Obrigado pela preferencia.",
+    "Aguarde, seu pedido chegará em breve",
+    "Mais informações ligue para 33333-3311",
+    `Valor do Pedido: ${banco.db[user].preco}`,
+    `Valor Troco: ${banco.db[user].valor_troco}`
+  ];
   
   banco.db[user] = {
     stage: 0,
@@ -60,13 +30,41 @@ function execute(user, msg) {
     nome: ''
   };
   
-  return [
-    "Obrigado pela preferencia.",
-    "Aguarde, seu pedido chegará em breve",
-    "Mais informações ligue para 33333-3311",
-    `Valor do Pedido: ${banco.db[user].preco}`,
-    `Valor Troco: ${banco.db[user].valor_troco}`
-  ];
+  return message
+}
+
+async function saveClient(user) {
+  var number = parseInt(user.numero)
+  var name = user.nome
+  var payment = user.preco
+  var address = user.endereco
+  // const VALUES = [numero, nome, preco, endereco, valor_troco]
+  
+  if(typeof nome === 'undefined'){
+    nome = "no name"
+  }
+  
+//TO-DO
+//check if a client is already registed
+//crypt number
+//use number as foreingkey
+  var client = await Client.findOne({where: { number}})
+  console.log(client)
+  if (client) {
+    payment = client.payment + payment
+    await client.update({name, payment, address})
+  } else {
+    client = await Client.create({number, name, payment, address})
+  }
+
+  if (client) {
+    Object.keys(user.itens).forEach(async (i) =>{
+      await Order.create({
+        Client_id: client.id,
+        Product_id: user.itens[i].id
+      })
+    });    
+  }
 }
 
 exports.execute = execute;
