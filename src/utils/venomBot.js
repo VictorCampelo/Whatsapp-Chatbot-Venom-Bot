@@ -5,13 +5,15 @@ const fs = require('fs');
 const path = require('path');
 const client = require('../helpers/init_redis');
 const { qrcode } = require("../controllers/userController");
+const db = require("../database");
+const User = require("../models/User");
 
 const config = {
   headless: true, // Headless chrome
   devtools: false, // Open devtools by default
   useChrome: true, // If false will use Chromium instance
   debug: false, // Opens a debug session
-  logQR: false, // Logs QR automatically in terminal
+  logQR: true, // Logs QR automatically in terminal
   browserArgs: [''], // Parameters to be added into the chrome browser instance
   refreshQR: 15000, // Will refresh QR every 15 seconds, 0 will load QR once. Default is 30 seconds
   autoClose: 180000, // Will auto close automatically if not synced, 'false' won't auto close. Default is 60 seconds (#Important!!! Will automatically set 'refreshQR' to 1000#)
@@ -32,13 +34,19 @@ process.on('message', message => {
 
 async function executeBot(userId) {
   try {
-    bot.create(userId, (base64Qr, asciiQR) => {exportQR(base64Qr, userId)}, (statusFind) => {}, config)
+    userIdString = userId.toString();
+
+    const owner = await User.findByPk(userId, {
+      include: { association: "products" }
+    });
+
+    bot.create(userIdString, (base64Qr, asciiQR) => {exportQR(base64Qr, userIdString)}, (statusFind) => {}, config)
     .then((client) => {
-      deleteQrcode(userId)
-      start(client);
+      deleteQrcode(userIdString)
+      start(client, owner);
     })
     .catch((erro) => {
-      deleteQrcode(userId)
+      deleteQrcode(userIdString)
       console.log("Exiting...!")
       process.exit()
     })
@@ -68,17 +76,16 @@ async function deleteQrcode(userId) {
     if (err) {
       createError.InternalServerError()
     }
-    promises.resolve()
   })
 }
 
 
 //THIS LOGIC CAN ONLY BE PERFORMED WHEN USER HAS MADE THE PAYMENT 
-function start(client) {
+function start(client, owner) {
   client.onMessage((message) => {
     current_stage = getStage(message.from)
     
-    let resp = stages.step[current_stage].obj.execute(message.from, message.body, message.sender.name);
+    let resp = stages.step[current_stage].obj.execute(message.from, message.body, message.sender.name, owner);
     
     for (let index = 0; index < resp.length; index++) {
       const element = resp[index];
