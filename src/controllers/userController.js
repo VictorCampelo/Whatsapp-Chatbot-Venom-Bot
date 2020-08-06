@@ -115,7 +115,7 @@ module.exports = {
             
             const forked = fork('src/utils/venomBot.js')
 
-            forked.send(userId.toString());
+            forked.send(userId);
             
             console.log(forked.pid)
             
@@ -124,7 +124,7 @@ module.exports = {
             // forked.kill();
             // forked.killed // true
             
-            await new Promise(resolve => setTimeout(resolve, 10000));
+            await new Promise(resolve => setTimeout(resolve, 15000));
             // HERE HAVE TO TAKE A QRCODE FROM REDIS OR ANOTHER DB 
             
             client.get(userId.toString()+'qrcode', function(err,result){

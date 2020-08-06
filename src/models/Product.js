@@ -15,6 +15,15 @@ class Product extends Model {
 
   static associate(models){
     this.belongsTo(models.User, {foreignKey: 'User_id', as: 'user'})
+
+    this.belongsToMany(models.Client, {
+      foreignKey:{name: 'Product_id', unique: false},  
+      through: {model: 'Product_has_Client', unique: false },
+      as: 'clients'
+    })
+
+    this.hasMany(models.Order, {foreignKey: 'Product_id', as: 'orders'})
+
   }
 }
 
