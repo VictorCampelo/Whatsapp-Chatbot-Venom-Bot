@@ -107,3 +107,9 @@ tokens/
 sql/
 files/
 
+# file to test Sequelize Orm querys
+sqlQuerysVerifications.js
+
+.*
+
+dump/

@@ -47,7 +47,7 @@ module.exports = {
   verifyRefreshToken: (refreshToken) => {
     return new Promise((resolve, reject) => {
       JWT.verify(
-        refreshToken,
+        refreshToken, 
         process.env.REFRESH_TOKEN_SECRET,
         (err, user) => {
           if (err) {
