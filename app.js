@@ -28,7 +28,10 @@ app.use(routesStages);
 
 var server = http.createServer(app); 
 // server.listen(3000, '192.168.0.8');
-server.listen(3000);
+
+const port = process.env.PORT || 3000;
+
+server.listen(port);
 console.log("Servidor escutando na porta 3000...")
 
 module.exports = app;

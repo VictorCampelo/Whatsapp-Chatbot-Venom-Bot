@@ -1,0 +1,64 @@
+version: "3.2"
+services:
+  api:
+    env_file: .env
+    build: 
+      context: .
+    image: victorcampelo/whatsapp-bot
+    networks:
+      - frontend
+      - backend
+    cap_add: 
+      - SYS_ADMIN
+    command: npm start
+    environment:
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+      - REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}
+      - PORT=${PORT}
+      - DB_HOSTNAME=${DB_HOSTNAME}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DB=${DB_DB}
+      - DB_PORT=${DB_PORT}
+      - REDIS_SERVER_ADDR=redis
+    volumes:
+      - .:/home/pptruser/app
+    ports:
+      - "3000:3000"
+    container_name: whatsapp-bot
+    links: 
+      - mariadb
+      - redis
+    depends_on: 
+      - mariadb
+      - redis
+    networks: 
+      - backend
+  mariadb:
+    image: mariadb
+    networks:
+      - backend
+    environment:
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${DB_DB}
+    container_name: mariadb
+    volumes:
+    - "./dump/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d"
+    restart: always
+    ports: 
+      - "3306:3306"
+    expose:
+      - 3306
+  redis:
+    container_name: redis
+    image: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - backend
+networks:
+  frontend:
+  backend:

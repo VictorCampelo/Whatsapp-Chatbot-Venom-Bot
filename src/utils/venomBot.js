@@ -47,8 +47,9 @@ async function executeBot(userId) {
     })
     .catch((erro) => {
       deleteQrcode(userIdString)
+      console.log(erro)
       console.log("Exiting...!")
-      process.exit()
+      //process.exit()
     })
   } catch (error) {
     console.log(error)
