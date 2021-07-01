@@ -103,8 +103,13 @@ dist
 # TernJS port file
 .tern-port
 
-src/tockens/
-
-marketing*
-
+tokens/
 sql/
+files/
+
+# file to test Sequelize Orm querys
+sqlQuerysVerifications.js
+
+.*
+
+dump/

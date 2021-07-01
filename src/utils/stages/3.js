@@ -1,7 +1,7 @@
-const banco = require("../banco");
+const banco = require("../bd");
 const stages = require("../stages");
 
-function execute(user, msg) {
+function execute(user, msg, contact, owner) {
   if (msg === "*") {
     banco.db[user].stage = 0;
     return ["Pedido cancelado com sucesso"];
@@ -9,7 +9,7 @@ function execute(user, msg) {
 
   if (msg === "#") {
     banco.db[user].stage = 4;
-    return stages.step[4].obj.execute(user, "");
+    return stages.step[4].obj.execute(user, "", owner);
   }
 
   if (msg != "#" && msg != "*"){

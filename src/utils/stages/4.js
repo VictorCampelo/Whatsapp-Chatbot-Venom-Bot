@@ -1,7 +1,7 @@
-const banco = require("../banco");
+const banco = require("../bd");
 
 let estagioInterno = 0;
-function execute(user, msg) {
+function execute(user, msg, contact, owner) {
   //banco.db[user].stage = 0;
 
   if (estagioInterno === 1) {
@@ -11,7 +11,7 @@ function execute(user, msg) {
 
     //ERRORS VERIFICATIONS
     estagioInterno = 0
-    return stages.step[5].obj.execute(user, "");
+    return stages.step[5].obj.execute(user, "", owner);
   }
 
   if (msg === "1") {

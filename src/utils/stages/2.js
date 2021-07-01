@@ -1,6 +1,6 @@
-const banco = require("../banco");
+const banco = require("../bd");
 
-function execute(user, msg) {
+function execute(user, msg, contact, owner) {
   if (msg === "*") {
     banco.db[user].stage = 0;
     return ["Pedido cancelado com sucesso"];
@@ -19,8 +19,8 @@ function execute(user, msg) {
     (i) => {
       console.log(i);
       
-      resumo += `${i.descricao} ----------------  ${i.preco} \n`;
-      total += i.preco;
+      resumo += `${i.describe} ----------------  ${i.price} \n`;
+      total += i.price;
       
     }
   );

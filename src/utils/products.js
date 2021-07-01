@@ -1,4 +1,6 @@
-const cardapio = {
+// THIS PRODUCTS SHOULD BE CREATED IN DYNAMICALLY WAY
+
+const products = {
   1: {
     descricao: "X-Burguer",
     preco: 9.9,
@@ -13,4 +15,4 @@ const cardapio = {
   },
 };
 
-exports.menu = cardapio;
+exports.menu = products;
