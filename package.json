@@ -2,10 +2,10 @@
   "name": "whatsapp-bot",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "src/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app"
+    "start": "nodemon main"
   },
   "nodemonConfig": {
     "ignore": [
@@ -41,7 +41,7 @@
     "restify": "^8.5.1",
     "Router": "^2.1.0",
     "sequelize": "^6.3.4",
-    "venom-bot": "^1.1.4"
+    "venom-bot": "^3.0.20"
   },
   "devDependencies": {
     "sequelize-cli": "^6.2.0"

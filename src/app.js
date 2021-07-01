@@ -1,15 +1,15 @@
 const express = require('express');
 //const bot = require("./utils/venomBot")
-const db = require('./src/database');
-const routesUsers = require('./src/routes/users');
-const routesIndex = require('./src/routes/index');
-const routesAuth = require('./src/routes/auth');
+const db = require('./database');
+const routesUsers = require('./routes/users');
+const routesIndex = require('./routes/index');
+const routesAuth = require('./routes/auth');
 const bodyParser = require('body-parser');
 
 var http = require('http');  
 var cookieParser = require('cookie-parser');
-const routesProduct = require('./src/routes/product');
-const routesStages = require('./src/routes/stages');
+const routesProduct = require('./routes/product');
+const routesStages = require('./routes/stages');
 
 const app = express();
 
