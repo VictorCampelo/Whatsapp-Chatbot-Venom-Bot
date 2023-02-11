@@ -35,13 +35,13 @@
     "mariadb": "^2.4.2",
     "mysql": "^2.18.1",
     "mysql2": "^2.1.0",
-    "nodemon": "^2.0.4",
+    "nodemon": "^2.0.20",
     "pg": "^8.3.0",
     "redis": "^3.0.2",
     "restify": "^8.5.1",
     "Router": "^2.1.0",
     "sequelize": "^6.3.4",
-    "venom-bot": "^3.0.20"
+    "venom-bot": "^4.3.7"
   },
   "devDependencies": {
     "sequelize-cli": "^6.2.0"
