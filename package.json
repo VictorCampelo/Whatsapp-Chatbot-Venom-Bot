@@ -40,7 +40,7 @@
     "redis": "^3.0.2",
     "restify": "^8.5.1",
     "Router": "^2.1.0",
-    "sequelize": "^6.3.4",
+    "sequelize": "^6.28.2",
     "venom-bot": "^3.0.20"
   },
   "devDependencies": {
